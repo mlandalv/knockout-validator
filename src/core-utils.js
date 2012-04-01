@@ -1,58 +1,73 @@
 ﻿(function (ko) {
     "use strict";
 
-    var validator = ko.validator,
-        utils = validator.utils || {};
+    var validator = ko.validator;
 
-    utils.isRuleActive = function (value) {
-        /// <summary>Whether or not the rule should be run. Value can be any object: true, false, function, ko.computable etc.
-        /// If the value (or return value) isn't explicitly false then this will return true.</summary>
-        /// <param name="value">The rule's option value.</param>
-        var isActive;
+    validator.utils = {
+        isRuleEnabled: function (value) {
+            /// <summary>Whether or not the rule should be run. Value can be any object: true, false, function, ko.computable etc.
+            /// If the value (or return value) isn't explicitly false then this will return true.</summary>
+            /// <param name="value">The rule's option value.</param>
+            var isEnabled;
 
-        if (ko.isObservable(value)) {
-            isActive = ko.utils.unwrapObservable(value) !== false;
-        } else if (typeof value === "function") {
-            isActive = value() !== false;
-        } else {
-            isActive = value !== false;
-        }
+            if (ko.isObservable(value)) {
+                isEnabled = ko.utils.unwrapObservable(value) !== false;
+            } else if (typeof value === "function") {
+                isEnabled = value() !== false;
+            } else {
+                isEnabled = value !== false;
+            }
 
-        return isActive;
-    };
+            return isEnabled;
+        },
+        validateObservable: (function () {
+            var self = this; // Keep referens to utils
 
-    utils.validateObservable = function (target) {
-        /// <summary>Validates the target observable based on its rules.
-        /// This method assumes the observable already has been extended using extend({ rules: ... }).</summary>
-        /// <param name="target">Observable to validate.</param>
-        var ruleName, rules = target.rules, messages = rules.messages || {}, message, rule, isValid, value;
+            function validateRule(target, ruleName) {
+                var method = validator.methods[ruleName],
+                    param = target.rules[ruleName],
+                    messages,
+                    errorMessage,
+                    isValid;
 
-        target.errors.removeAll();
+                // The messages property contains overridden default error messages and is not a rule
+                if (ruleName === "messages") {
+                    return;
+                }
 
-        for (ruleName in rules) {
-            if (rules.hasOwnProperty(ruleName)) {
-                // The property is the name of a rule
-                if (ruleName !== "messages") {
-                    value = rules[ruleName];
+                // Check if the rule should be run, e.g. if you have number: false, that rule should not be run.
+                if (validator.utils.isRuleEnabled(param)) {
+                    isValid = method(target(), target, param) !== false;
 
-                    if (utils.isRuleActive(value)) {
-                        rule = validator.methods[ruleName];
+                    // Get overridden or default error message.
+                    if (!isValid) {
+                        messages = target.rules.messages || {};
+                        errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                        isValid = rule.validate(target);
-
-                        // Get overridden or default error message.
-                        if (!isValid) {
-                            message = messages[ruleName] || rule.message;
-
-                            target.errors.push(message);
-                        }
+                        target.errors.push(errorMessage);
                     }
                 }
             }
-        }
 
-        return target.valid();
+            return function (target) {
+                /// <summary>Validates the target observable based on its rules.
+                /// This method assumes the observable already has been extended using extend({ rules: ... }).</summary>
+                /// <param name="target">Observable to validate.</param>
+                var ruleName, rules = target.rules, messages = rules.messages || {}, message, validationMethod, isValid, value;
+
+                target.errors.removeAll();
+
+                for (ruleName in rules) {
+                    if (rules.hasOwnProperty(ruleName)) {
+                        // The property is the name of a rule
+                        if (ruleName !== "messages") {
+                            validateRule(target, ruleName);
+                        }
+                    }
+                }
+
+                return target.valid();
+            };
+        }())
     };
-
-    validator.utils = utils;
 }(ko));

@@ -9,7 +9,7 @@
             /// <param name="target">The target observable.</param>
             /// <returns>True if the value doesn't have a value, otherwise false.</returns>
 
-            return !this.methods.required(target); // When methods are added the validator object is bound to 'this'
+            return !this.methods.required(target(), target, true); // When methods are added the validator object is bound to 'this'
         },
         addMethod: function (name, callback, message) {
             /// <summary>Adds a new validation method.</summary>
