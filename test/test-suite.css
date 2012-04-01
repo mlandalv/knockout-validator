@@ -1,0 +1,17 @@
+body {
+    font-size: 75%;
+    line-height: 1.125em;
+    font-family: Verdana;
+}
+
+pre {
+    font-size: 120%;
+    padding: .5em;
+    background-color: #eee;
+    overflow: auto;
+}
+
+code {
+    font-size: 120%;
+    background-color: #eee;
+}
