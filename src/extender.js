@@ -22,6 +22,11 @@
             return validator.utils.validateObservable(target);
         };
 
+        // Validate when value is changed
+        target.subscribe(function () {
+            target.validate();
+        });
+
         return target;
     };
 }(ko));
