@@ -46,6 +46,26 @@ test("validateObservable", function () {
     var utils = ko.validator.utils,
         target;
 
+    target = ko.observable();
+    equal(utils.validateObservable(target), true, "True observable isn't validatable");
+
+    target = ko.observableArray([
+        ko.observable("foo"),
+        ko.observable("bar")
+    ]);
+    equal(utils.validateObservable(target), true, "True observable isn't validatableif observable array with non-validatable objects");
+
+    target = ko.computed(function () { return "foobar"; });
+    equal(utils.validateObservable(target), true, "True if computable");
+
+    target = ko.computed({
+        read: function () {
+            return "foobar";
+        },
+        write: function (value) {}
+    });
+    equal(utils.validateObservable(target), true, "True if writable computable");
+
     target = ko.observable("foobar").extend({ rules: {} });
     equal(utils.validateObservable(target), true, "True if no rules were specified");
 

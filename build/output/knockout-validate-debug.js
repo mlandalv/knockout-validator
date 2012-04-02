@@ -41,7 +41,15 @@
         validateObject,
         isRuleEnabled,
         validateObservable,
-        isValidatable;
+        isValidatable,
+        isArray;
+
+    isArray = Array.isArray || function (obj) {
+        /// <summary>Checks if the object is an array.</summary>
+        /// <param name="obj">The object to check if it is an array.</param>
+        /// <returns>True if obj is an array, otherwise false.</returns>
+        return Object.prototype.toString.call(obj) === "[object Array]";
+    };
 
     isValidatable = function (element) {
         /// <summary>Checks if the element is validatable.</summary>
@@ -77,7 +85,7 @@
         if (typeof obj !== "boolean" && typeof obj !== "number") {
             if (ko.isWriteableObservable(obj)) {
                 result = validateObservable(obj);
-            } else if (obj instanceof Array) {
+            } else if (isArray(obj)) {
                 result = validateArray(obj);
             } else {
                 for (prop in obj) {
@@ -167,7 +175,7 @@
             } else {
                 value = ko.utils.unwrapObservable(target);
 
-                if (value instanceof Array) {
+                if (isArray(value)) {
                     isValid = validateArray(value);
                 }
             }
