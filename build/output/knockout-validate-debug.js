@@ -20,16 +20,21 @@
             /// <param name="callback">Callback to run on validate.</param>
             /// <param name="message">Default error message.</param>
 
-            // Make sure the validator object is bound to 'this'
+            // Make sure the validator object is bound to 'this' when the callback is invoked
             this.methods[name] = callback.bind(this);
             this.messages[name] = message;
         },
         validate: (function () {
-            function validateArray(array) {
-                /// <summary>Validate all observables in the array (recursive in other arrays if needed).</summary>
+            var validateObject,
+                validateArray;
+
+            validateArray = function (array) {
+                /// <summary>Validate all objects in the array.</summary>
                 /// <param name="array">The array whose object should be validated.</param>
                 /// <returns>True if all objects passed validation, otherwise false.</returns>
-                var i, result = true, tempResult;
+                var result = true, // Default to true if the array if empty
+                    tempResult,
+                    i;
 
                 for (i = 0; i < array.length; i += 1) {
                     tempResult = validateObject(array[i]);
@@ -40,13 +45,14 @@
                 }
 
                 return result;
-            }
+            };
 
-            function validateObject(obj) {
+            validateObject = function (obj) {
                 /// <summary>Validates the specified object.</summary>
-                /// <param name="obj">The object to validate, this object can be of unkwnown type.</param>
-                /// <returns>True if all objects passed validation, otherwise false.</returns>
-                var result = true, value;
+                /// <param name="obj">The object to validate.</param>
+                /// <returns>True if the object passed validation (in case of array, if all its items passed validation), otherwise false.</returns>
+                var result = true,
+                    value;
 
                 if (ko.isWriteableObservable(obj)) {
                     value = ko.utils.unwrapObservable(obj);
@@ -59,13 +65,15 @@
                 }
 
                 return result;
-            }
+            };
 
             return function (viewModel) {
                 /// <summary>Validates a viewmodel; all observables and observables in arrays etc.</summary>
                 /// <param name="viewModel">The viewmodel to validate.</param>
                 /// <returns>True if all objects on the viewmodel passed validation, otherwise false.</returns>
-                var prop, result = true, tempResult;
+                var result = true,
+                    prop,
+                    tempResult;
 
                 for (prop in viewModel) {
                     if (viewModel.hasOwnProperty(prop)) {
@@ -107,8 +115,6 @@
             return isEnabled;
         },
         validateObservable: (function () {
-            var self = this; // Keep referens to utils
-
             function validateRule(target, ruleName) {
                 var method = validator.methods[ruleName],
                     param = target.rules[ruleName],
@@ -139,7 +145,8 @@
                 /// <summary>Validates the target observable based on its rules.
                 /// This method assumes the observable already has been extended using extend({ rules: ... }).</summary>
                 /// <param name="target">Observable to validate.</param>
-                var ruleName, rules = target.rules, messages = rules.messages || {}, message, validationMethod, isValid, value;
+                var ruleName,
+                    rules = target.rules;
 
                 target.errors.removeAll();
 
@@ -162,14 +169,12 @@
 
     ko.validator.addMethod("required",
         function (value, target, param) {
-            var targetValue = target();
-
-            return targetValue !== undefined && targetValue !== null && targetValue !== "";
+            return value !== undefined && value !== null && value !== "";
         }, "This field is required.");
 
     ko.validator.addMethod("number",
         function (value, target, param) {
-            return this.optional(target) || !isNaN(+(target()));
+            return this.optional(target) || !isNaN(+(value));
         }, "Please enter a valid number.");
 }(ko));
 (function (ko) {

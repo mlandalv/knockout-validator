@@ -21,8 +21,6 @@
             return isEnabled;
         },
         validateObservable: (function () {
-            var self = this; // Keep referens to utils
-
             function validateRule(target, ruleName) {
                 var method = validator.methods[ruleName],
                     param = target.rules[ruleName],
@@ -53,7 +51,8 @@
                 /// <summary>Validates the target observable based on its rules.
                 /// This method assumes the observable already has been extended using extend({ rules: ... }).</summary>
                 /// <param name="target">Observable to validate.</param>
-                var ruleName, rules = target.rules, messages = rules.messages || {}, message, validationMethod, isValid, value;
+                var ruleName,
+                    rules = target.rules;
 
                 target.errors.removeAll();
 

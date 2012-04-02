@@ -3,13 +3,11 @@
 
     ko.validator.addMethod("required",
         function (value, target, param) {
-            var targetValue = target();
-
-            return targetValue !== undefined && targetValue !== null && targetValue !== "";
+            return value !== undefined && value !== null && value !== "";
         }, "This field is required.");
 
     ko.validator.addMethod("number",
         function (value, target, param) {
-            return this.optional(target) || !isNaN(+(target()));
+            return this.optional(target) || !isNaN(+(value));
         }, "Please enter a valid number.");
 }(ko));

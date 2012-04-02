@@ -17,16 +17,21 @@
             /// <param name="callback">Callback to run on validate.</param>
             /// <param name="message">Default error message.</param>
 
-            // Make sure the validator object is bound to 'this'
+            // Make sure the validator object is bound to 'this' when the callback is invoked
             this.methods[name] = callback.bind(this);
             this.messages[name] = message;
         },
         validate: (function () {
-            function validateArray(array) {
-                /// <summary>Validate all observables in the array (recursive in other arrays if needed).</summary>
+            var validateObject,
+                validateArray;
+
+            validateArray = function (array) {
+                /// <summary>Validate all objects in the array.</summary>
                 /// <param name="array">The array whose object should be validated.</param>
                 /// <returns>True if all objects passed validation, otherwise false.</returns>
-                var i, result = true, tempResult;
+                var result = true, // Default to true if the array if empty
+                    tempResult,
+                    i;
 
                 for (i = 0; i < array.length; i += 1) {
                     tempResult = validateObject(array[i]);
@@ -37,13 +42,14 @@
                 }
 
                 return result;
-            }
+            };
 
-            function validateObject(obj) {
+            validateObject = function (obj) {
                 /// <summary>Validates the specified object.</summary>
-                /// <param name="obj">The object to validate, this object can be of unkwnown type.</param>
-                /// <returns>True if all objects passed validation, otherwise false.</returns>
-                var result = true, value;
+                /// <param name="obj">The object to validate.</param>
+                /// <returns>True if the object passed validation (in case of array, if all its items passed validation), otherwise false.</returns>
+                var result = true,
+                    value;
 
                 if (ko.isWriteableObservable(obj)) {
                     value = ko.utils.unwrapObservable(obj);
@@ -56,13 +62,15 @@
                 }
 
                 return result;
-            }
+            };
 
             return function (viewModel) {
                 /// <summary>Validates a viewmodel; all observables and observables in arrays etc.</summary>
                 /// <param name="viewModel">The viewmodel to validate.</param>
                 /// <returns>True if all objects on the viewmodel passed validation, otherwise false.</returns>
-                var prop, result = true, tempResult;
+                var result = true,
+                    prop,
+                    tempResult;
 
                 for (prop in viewModel) {
                     if (viewModel.hasOwnProperty(prop)) {
