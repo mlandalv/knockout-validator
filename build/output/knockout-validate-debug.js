@@ -38,7 +38,6 @@
 
     var validator = ko.validator,
         validateArray,
-        validateProperty,
         validateObject,
         isRuleEnabled,
         validateObservable,
@@ -68,27 +67,6 @@
         return result;
     };
 
-    validateProperty = function (property) {
-        /// <summary>Validates the specified property. If the property is an object, its properties are validated.
-        /// If the property is an array, all its items are validated, etc.</summary>
-        /// <param name="property">The property to validate.</param>
-        /// <returns>True if validation passed (or if not validatable), otherwise false.</returns>
-        var result = true,
-            value;
-
-        if (ko.isWriteableObservable(property)) {
-            value = ko.utils.unwrapObservable(property);
-
-            if (value instanceof Array) {
-                result = validateArray(value);
-            } else if (isValidatable(property)) {
-                result = property.validate();
-            }
-        }
-
-        return result;
-    };
-
     validateObject = function (obj) {
         /// <summary>Validates the specified object.</summary>
         /// <param name="obj">The object to validate.</param>
@@ -96,10 +74,18 @@
         var result = true,
             prop;
 
-        for (prop in obj) {
-            if (obj.hasOwnProperty(prop)) {
-                if (!validateProperty(obj[prop])) {
-                    result = false;
+        if (typeof obj !== "boolean" && typeof obj !== "number") {
+            if (ko.isWriteableObservable(obj)) {
+                result = validateObservable(obj);
+            } else if (obj instanceof Array) {
+                result = validateArray(obj);
+            } else {
+                for (prop in obj) {
+                    if (obj.hasOwnProperty(prop)) {
+                        if (!validateObject(obj[prop])) {
+                            result = false;
+                        }
+                    }
                 }
             }
         }
@@ -160,20 +146,33 @@
             /// <param name="target">Observable to validate.</param>
             /// <returns>True if validation passed, otherwise false.</returns>
             var ruleName,
+                rules,
+                value,
+                isValid = true;
+
+            if (isValidatable(target)) {
                 rules = target.rules;
+                target.errors.removeAll();
 
-            target.errors.removeAll();
-
-            for (ruleName in rules) {
-                if (rules.hasOwnProperty(ruleName)) {
-                    // The property is the name of a rule
-                    if (ruleName !== "messages") {
-                        validateRule(target, ruleName);
+                for (ruleName in rules) {
+                    if (rules.hasOwnProperty(ruleName)) {
+                        // The property is the name of a rule
+                        if (ruleName !== "messages") {
+                            validateRule(target, ruleName);
+                        }
                     }
+                }
+
+                isValid = target.valid();
+            } else {
+                value = ko.utils.unwrapObservable(target);
+
+                if (value instanceof Array) {
+                    isValid = validateArray(value);
                 }
             }
 
-            return target.valid();
+            return isValid;
         };
     }());
 
@@ -182,8 +181,7 @@
         isValidatable: isValidatable,
         validateArray: validateArray,
         validateObject: validateObject,
-        validateObservable: validateObservable,
-        validateProperty: validateProperty
+        validateObservable: validateObservable
     };
 }(ko));
 (function (ko) {
