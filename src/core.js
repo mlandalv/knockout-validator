@@ -5,9 +5,9 @@
         methods: {},
         messages: {},
         optional: function (target) {
-            /// <summary>Checks if the target passes validation due to being "empty".</summary>
+            /// <summary>Checks if the target observable doesn't require a value.</summary>
             /// <param name="target">The target observable.</param>
-            /// <returns>True if the value doesn't have a value, otherwise false.</returns>
+            /// <returns>True if no value is required, otherwise false.</returns>
 
             return !this.methods.required(target(), target, true); // When methods are added the validator object is bound to 'this'
         },
@@ -21,70 +21,26 @@
             this.methods[name] = callback.bind(this);
             this.messages[name] = message;
         },
-        validate: (function () {
-            var validateObject,
-                validateArray;
+        validate: function (viewModel) {
+            /// <summary>Validates a viewmodel; all observables and observables in arrays etc.</summary>
+            /// <param name="viewModel">The viewmodel to validate.</param>
+            /// <returns>True if all objects on the viewmodel passed validation, otherwise false.</returns>
+            var result = true,
+                prop,
+                tempResult;
 
-            validateArray = function (array) {
-                /// <summary>Validate all objects in the array.</summary>
-                /// <param name="array">The array whose object should be validated.</param>
-                /// <returns>True if all objects passed validation, otherwise false.</returns>
-                var result = true, // Default to true if the array if empty
-                    tempResult,
-                    i;
-
-                for (i = 0; i < array.length; i += 1) {
-                    tempResult = validateObject(array[i]);
+            for (prop in viewModel) {
+                if (viewModel.hasOwnProperty(prop)) {
+                    tempResult = validator.utils.validateObject(viewModel[prop]);
 
                     if (!tempResult) {
                         result = tempResult;
                     }
                 }
+            }
 
-                return result;
-            };
-
-            validateObject = function (obj) {
-                /// <summary>Validates the specified object.</summary>
-                /// <param name="obj">The object to validate.</param>
-                /// <returns>True if the object passed validation (in case of array, if all its items passed validation), otherwise false.</returns>
-                var result = true,
-                    value;
-
-                if (ko.isWriteableObservable(obj)) {
-                    value = ko.utils.unwrapObservable(obj);
-
-                    if (value instanceof Array) {
-                        result = validateArray(value);
-                    } else if (typeof obj.validate === "function") {
-                        result = obj.validate();
-                    }
-                }
-
-                return result;
-            };
-
-            return function (viewModel) {
-                /// <summary>Validates a viewmodel; all observables and observables in arrays etc.</summary>
-                /// <param name="viewModel">The viewmodel to validate.</param>
-                /// <returns>True if all objects on the viewmodel passed validation, otherwise false.</returns>
-                var result = true,
-                    prop,
-                    tempResult;
-
-                for (prop in viewModel) {
-                    if (viewModel.hasOwnProperty(prop)) {
-                        tempResult = validateObject(viewModel[prop]);
-
-                        if (!tempResult) {
-                            result = tempResult;
-                        }
-                    }
-                }
-
-                return result;
-            };
-        }())
+            return result;
+        }
     };
 
     ko.validator = validator;
