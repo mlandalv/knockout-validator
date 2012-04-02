@@ -24,21 +24,7 @@
             /// <summary>Validates a viewmodel; all observables and observables in arrays etc.</summary>
             /// <param name="viewModel">The viewmodel to validate.</param>
             /// <returns>True if all objects on the viewmodel passed validation, otherwise false.</returns>
-            var result = true,
-                prop,
-                tempResult;
-
-            for (prop in viewModel) {
-                if (viewModel.hasOwnProperty(prop)) {
-                    tempResult = validator.utils.validateObject(viewModel[prop]);
-
-                    if (!tempResult) {
-                        result = tempResult;
-                    }
-                }
-            }
-
-            return result;
+            return this.utils.validateObject(viewModel);
         }
     };
 
