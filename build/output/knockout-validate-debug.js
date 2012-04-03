@@ -53,7 +53,7 @@
 
     isValidatable = function (element) {
         /// <summary>Checks if the element is validatable.</summary>
-        return typeof element.validate === "function";
+        return element.validator !== undefined;
     };
 
     validateArray = function (array) {
@@ -125,7 +125,8 @@
             /// <param name="target">Observable to validate.</param>
             /// <param name="target">Observable to validate.</param>
             var method = validator.methods[ruleName],
-                param = target.rules[ruleName],
+                val = target.validator,
+                param = val.rules[ruleName],
                 messages,
                 errorMessage,
                 isValid;
@@ -141,10 +142,10 @@
 
                 // Get overridden or default error message.
                 if (!isValid) {
-                    messages = target.rules.messages || {};
+                    messages = val.rules.messages || {};
                     errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                    target.errors.push(errorMessage);
+                    val.errors.push(errorMessage);
                 }
             }
         }
@@ -156,11 +157,13 @@
             var ruleName,
                 rules,
                 value,
+                val,
                 isValid = true;
 
             if (isValidatable(target)) {
-                rules = target.rules;
-                target.errors.removeAll();
+                val = target.validator;
+                rules = val.rules;
+                val.errors.removeAll();
 
                 for (ruleName in rules) {
                     if (rules.hasOwnProperty(ruleName)) {
@@ -171,7 +174,7 @@
                     }
                 }
 
-                isValid = target.valid();
+                isValid = val.valid();
             } else {
                 value = ko.utils.unwrapObservable(target);
 
@@ -216,22 +219,29 @@
         /// for overridden rule messages.</summary>
         /// <param name="target">Observable to Extend.</param>
         /// <param name="option">Rules and eventual overridden messages.</param>
-        target.rules = option;
-        target.errors = ko.observableArray();
-        target.valid = ko.computed(function () {
-            return target.errors().length === 0;
-        });
-        target.message = ko.computed(function () {
-            return target.errors()[0] || undefined;
-        });
+        var rules = option,
+            errors = ko.observableArray(),
+            valid = ko.computed(function () {
+                return errors().length === 0;
+            }),
+            message = ko.computed(function () {
+                return errors()[0] || undefined;
+            }),
+            validate = function () {
+                return validator.utils.validateObservable(target);
+            };
 
-        target.validate = function () {
-            return validator.utils.validateObservable(target);
+        target.validator = {
+            rules: rules,
+            errors: errors,
+            valid: valid,
+            message: message,
+            validate: validate
         };
 
         // Validate when value is changed
         target.subscribe(function () {
-            target.validate();
+            validate();
         });
 
         return target;

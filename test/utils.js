@@ -35,8 +35,8 @@ test("isValidatable", function () {
     target = {};
     equal(utils.isValidatable(target), false, "False if no validate method exists");
 
-    target.validate = function () { };
-    equal(utils.isValidatable(target), true, "True if a validate method exits");
+    target.validator = {};
+    equal(utils.isValidatable(target), true, "True if a validator property exits");
 });
 
 /*

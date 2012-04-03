@@ -18,7 +18,7 @@
 
     isValidatable = function (element) {
         /// <summary>Checks if the element is validatable.</summary>
-        return typeof element.validate === "function";
+        return element.validator !== undefined;
     };
 
     validateArray = function (array) {
@@ -90,7 +90,8 @@
             /// <param name="target">Observable to validate.</param>
             /// <param name="target">Observable to validate.</param>
             var method = validator.methods[ruleName],
-                param = target.rules[ruleName],
+                val = target.validator,
+                param = val.rules[ruleName],
                 messages,
                 errorMessage,
                 isValid;
@@ -106,10 +107,10 @@
 
                 // Get overridden or default error message.
                 if (!isValid) {
-                    messages = target.rules.messages || {};
+                    messages = val.rules.messages || {};
                     errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                    target.errors.push(errorMessage);
+                    val.errors.push(errorMessage);
                 }
             }
         }
@@ -121,11 +122,13 @@
             var ruleName,
                 rules,
                 value,
+                val,
                 isValid = true;
 
             if (isValidatable(target)) {
-                rules = target.rules;
-                target.errors.removeAll();
+                val = target.validator;
+                rules = val.rules;
+                val.errors.removeAll();
 
                 for (ruleName in rules) {
                     if (rules.hasOwnProperty(ruleName)) {
@@ -136,7 +139,7 @@
                     }
                 }
 
-                isValid = target.valid();
+                isValid = val.valid();
             } else {
                 value = ko.utils.unwrapObservable(target);
 
