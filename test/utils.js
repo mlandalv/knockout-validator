@@ -66,8 +66,10 @@ test("validateObservable", function () {
     });
     equal(utils.validateObservable(target), true, "True if writable computable");
 
-    target = ko.observable("foobar").extend({ rules: {} });
-    equal(utils.validateObservable(target), true, "True if no rules were specified");
+    target = ko.observable("foobar").extend({
+        rules: {}
+    });
+    equal(utils.validateObservable(target), true, "True if no rule options were specified");
 
     target = ko.observable("foobar").extend({
         rules: {
