@@ -5,6 +5,17 @@
 module("Validator Utils");
 
 /*
+    ko.validator.utils.format
+*/
+test("format", function () {
+    var utils = ko.validator.utils;
+
+    equal(utils.format("foo{0}", "bar"), "foobar", "String replacement");
+    equal(utils.format("12{0}", 3), "123", "Number replacement");
+    equal(utils.format("{0}{1}", "foo", "bar"), "foobar", "Replacements don't replace each other");
+});
+
+/*
     ko.validator.utils.isRuleEnabled
 */
 test("isRuleEnabled", function () {

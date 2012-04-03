@@ -41,20 +41,23 @@
         validateObject,
         isRuleEnabled,
         validateObservable,
-        isValidatable,
-        isArray;
+        isValidatable = function (element) {
+            /// <summary>Checks if the element is validatable.</summary>
+            return element.validator !== undefined;
+        },
+        isArray = Array.isArray || function (obj) {
+            /// <summary>Checks if the object is an array.</summary>
+            /// <param name="obj">The object to check if it is an array.</param>
+            /// <returns>True if obj is an array, otherwise false.</returns>
+            return Object.prototype.toString.call(obj) === "[object Array]";
+        },
+        format = function (input) {
+            var args = Array.prototype.slice.call(arguments, 1);
 
-    isArray = Array.isArray || function (obj) {
-        /// <summary>Checks if the object is an array.</summary>
-        /// <param name="obj">The object to check if it is an array.</param>
-        /// <returns>True if obj is an array, otherwise false.</returns>
-        return Object.prototype.toString.call(obj) === "[object Array]";
-    };
-
-    isValidatable = function (element) {
-        /// <summary>Checks if the element is validatable.</summary>
-        return element.validator !== undefined;
-    };
+            return input.replace(/{(\d+)}/g, function (match, number) {
+                return args[number] !== undefined ? args[number] : match;
+            });
+        };
 
     validateArray = function (array) {
         /// <summary>Validate all objects in the array.</summary>
@@ -122,6 +125,10 @@
     };
 
     validateObservable = (function () {
+        function formatMessage(input, params) {
+            return format(input, params);
+        }
+
         function validateRule(target, ruleName) {
             /// <summary>Validate the specific rule against the target observable. If validation failed, the error messeage
             /// will be added to the errors collection.</summary>
@@ -148,7 +155,7 @@
                     messages = val.rules.messages || {};
                     errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                    val.errors.push(errorMessage);
+                    val.errors.push(formatMessage(errorMessage));
                 }
             }
         }
@@ -191,6 +198,7 @@
     }());
 
     validator.utils = {
+        format: format,
         isRuleEnabled: isRuleEnabled,
         isValidatable: isValidatable,
         validateArray: validateArray,
@@ -210,6 +218,16 @@
         function (value, target, param) {
             return this.optional(target) || !isNaN(+(value));
         }, "Please enter a valid number.");
+
+    ko.validator.addMethod("min",
+        function (value, target, param) {
+            return this.optional(target) || value >= param;
+        }, "Please enter a value greater than or equal to {0}.");
+
+    ko.validator.addMethod("max",
+        function (value, target, param) {
+            return this.optional(target) || value <= param;
+        }, "Please enter a value less than or equal to {0}.");
 }(ko));
 (function (ko) {
     "use strict";
