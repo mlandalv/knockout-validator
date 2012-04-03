@@ -81,16 +81,16 @@
         /// <returns>True if the object passed validation, otherwise false.</returns>
         var result = true,
             prop,
-            val;
+            value;
 
         if (ko.isWriteableObservable(obj)) {
             result = validateObservable(obj);
         } else {
-            val = ko.utils.unwrapObservable(obj);
+            value = ko.utils.unwrapObservable(obj);
 
-            if (isArray(val)) {
+            if (isArray(value)) {
                 result = validateArray(obj);
-            } else if (typeof val === "object") {
+            } else if (typeof value === "object") {
                 for (prop in obj) {
                     if (obj.hasOwnProperty(prop)) {
                         if (!validateObject(obj[prop])) {
