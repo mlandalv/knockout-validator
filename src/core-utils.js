@@ -16,6 +16,9 @@
             /// <returns>True if obj is an array, otherwise false.</returns>
             return Object.prototype.toString.call(obj) === "[object Array]";
         },
+        isFunction = function (obj) {
+            return typeof obj === "function";
+        },
         format = function (input) {
             var args = Array.prototype.slice.call(arguments, 1);
 
@@ -90,8 +93,16 @@
     };
 
     validateObservable = (function () {
-        function formatMessage(input, params) {
-            return format(input, params);
+        function formatMessage(input, param) {
+            var result;
+
+            if (isFunction(input)) {
+                result = input(param);
+            } else {
+                result = format(input, param);
+            }
+
+            return result;
         }
 
         function validateRule(target, ruleName) {
@@ -120,7 +131,7 @@
                     messages = val.rules.messages || {};
                     errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                    val.errors.push(formatMessage(errorMessage));
+                    val.errors.push(formatMessage(errorMessage, param));
                 }
             }
         }

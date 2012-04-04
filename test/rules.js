@@ -11,27 +11,27 @@ test("Required", function () {
     equal(ko.validator.messages.required, "This field is required.", "Verify default message");
 
     // undefined
-    equal(rule(target(), target, true), false, "Expects false when value is undefined");
+    equal(rule(target(), target), false, "Expects false when value is undefined");
 
     // null
     target(null);
-    equal(rule(target(), target, true), false, "Expects false when value is null");
+    equal(rule(target(), target), false, "Expects false when value is null");
 
     // Empty string
     target("");
-    equal(rule(target(), target, true), false, "Expects false when value is empty string");
+    equal(rule(target(), target), false, "Expects false when value is empty string");
 
     // Zero is falsy, but a valid value
     target(0);
-    equal(rule(target(), target, true), true, "Expects true if value is 0");
+    equal(rule(target(), target), true, "Expects true if value is 0");
 
     // False
     target(false);
-    equal(rule(target(), target, true), true, "Expects true when value is false");
+    equal(rule(target(), target), true, "Expects true when value is false");
 
     // Non-zero length string
     target("a");
-    equal(rule(target(), target, true), true, "Expects true when string value is set");
+    equal(rule(target(), target), true, "Expects true when string value is set");
 });
 
 test("Number", function () {
@@ -39,21 +39,21 @@ test("Number", function () {
         rule = ko.validator.methods.number;
 
     equal(ko.validator.messages.number, "Please enter a valid number.", "Verify default message");
-    equal(rule(target(), target, true), true, "True if value is not set (optional)");
+    equal(rule(target(), target), true, "True if value is not set (optional)");
 
     // Zero
     target(0);
-    equal(rule(target(), target, true), true, "True is returned if value is 0");
+    equal(rule(target(), target), true, "True is returned if value is 0");
 
     // String
     target("foobar");
-    equal(rule(target(), target, true), false, "False if value not convertable to number");
+    equal(rule(target(), target), false, "False if value not convertable to number");
 
     // String decimals
     target("0.1");
-    equal(rule(target(), target, true), true, "True if decimal value")
+    equal(rule(target(), target), true, "True if decimal value")
     target("0,1");
-    equal(rule(target(), target, true), false, "False if invalid decimal format");
+    equal(rule(target(), target), false, "False if invalid decimal format");
 });
 
 test("Min", function () {
@@ -61,7 +61,7 @@ test("Min", function () {
         rule = ko.validator.methods.min;
 
     equal(ko.validator.messages.min, "Please enter a value greater than or equal to {0}.", "Verify default message");
-    equal(rule(target(), target, true), true, "True if value is not set (optional)");
+    equal(rule(target(), target), true, "True if value is not set (optional)");
 
     // String
     target("foobar");
@@ -80,7 +80,7 @@ test("Max", function () {
         rule = ko.validator.methods.max;
 
     equal(ko.validator.messages.max, "Please enter a value less than or equal to {0}.", "Verify default message");
-    equal(rule(target(), target, true), true, "True if value is not set (optional)");
+    equal(rule(target(), target), true, "True if value is not set (optional)");
 
     // String
     target("foobar");
@@ -115,4 +115,29 @@ test("Digits", function () {
     equal(rule(target(), target), false, "False if decimal value")
     target("0,1");
     equal(rule(target(), target), false, "False if invalid decimal separator (parseInt would parse this to a valid digit number)");
+});
+
+test("Range", function () {
+    var target = ko.observable(),
+        rule = ko.validator.methods.range;
+
+
+    // Insert param values to test default values since function is used
+    equal(ko.validator.messages.range({ min: 1, max: 2 }), "Please enter a value between 1 and 2.", "Verify default message");
+    equal(rule(target(), target), true, "True if value is not set (optional)");
+
+    target(1);
+    equal(rule(target(), target, { min: 1, max: 2 }), true, "True if value equal to min");
+    target(2);
+    equal(rule(target(), target, { min: 1, max: 2 }), true, "True if value equal to max");
+    target(2);
+    equal(rule(target(), target, { min: 2, max: 2 }), true, "True if value equal to min and max");
+
+    target(0);
+    equal(rule(target(), target, { min: 1, max: 2 }), false, "False if value less than min");
+    target(3);
+    equal(rule(target(), target, { min: 1, max: 2 }), false, "False if value less greater than max");
+
+    target("foobar");
+    equal(rule(target(), target, { min: 1, max: 2 }), false, "False if value not number");
 });

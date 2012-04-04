@@ -51,6 +51,9 @@
             /// <returns>True if obj is an array, otherwise false.</returns>
             return Object.prototype.toString.call(obj) === "[object Array]";
         },
+        isFunction = function (obj) {
+            return typeof obj === "function";
+        },
         format = function (input) {
             var args = Array.prototype.slice.call(arguments, 1);
 
@@ -125,8 +128,16 @@
     };
 
     validateObservable = (function () {
-        function formatMessage(input, params) {
-            return format(input, params);
+        function formatMessage(input, param) {
+            var result;
+
+            if (isFunction(input)) {
+                result = input(param);
+            } else {
+                result = format(input, param);
+            }
+
+            return result;
         }
 
         function validateRule(target, ruleName) {
@@ -155,7 +166,7 @@
                     messages = val.rules.messages || {};
                     errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                    val.errors.push(formatMessage(errorMessage));
+                    val.errors.push(formatMessage(errorMessage, param));
                 }
             }
         }
@@ -209,6 +220,8 @@
 (function (ko) {
     "use strict";
 
+    var utils = ko.validator.utils;
+
     ko.validator.addMethod("required",
         function (value) {
             return value !== undefined && value !== null && value !== "";
@@ -233,6 +246,13 @@
         function (value, target) {
             return this.optional(target) || /^\d+$/.test(value);
         }, "Please enter only digits.");
+
+    ko.validator.addMethod("range",
+        function (value, target, param) {
+            return this.optional(target) || (value >= param.min && value <= param.max);
+        }, function (param) {
+            return utils.format("Please enter a value between {0} and {1}.", param.min, param.max);
+        });
 }(ko));
 (function (ko) {
     "use strict";
