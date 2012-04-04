@@ -21,7 +21,7 @@ test("Required", function () {
     target("");
     equal(rule(target(), target, true), false, "Expects false when value is empty string");
 
-    // Zero is considered a falsy value, but can be a valid value; ensure it returns true
+    // Zero is falsy, but a valid value
     target(0);
     equal(rule(target(), target, true), true, "Expects true if value is 0");
 
