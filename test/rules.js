@@ -93,3 +93,26 @@ test("Max", function () {
     equal(rule(target(), target, 0), true, "True if value equal to max");
     equal(rule(target(), target, -1), false, "False if value greater than max");
 });
+
+test("Digits", function () {
+    var target = ko.observable(),
+        rule = ko.validator.methods.digits;
+
+    equal(ko.validator.messages.digits, "Please enter only digits.", "Verify default message");
+    equal(rule(target(), target), true, "True if value is not set (optional)");
+
+    // Zero
+    target(0);
+    equal(rule(target(), target), true, "True if integer");
+
+    // String
+    target("foobar");
+    equal(rule(target(), target), false, "False if value not convertable to number");
+
+    target("0.1");
+    equal(rule(target(), target), false, "False if decimal value")
+    target(0.1);
+    equal(rule(target(), target), false, "False if decimal value")
+    target("0,1");
+    equal(rule(target(), target), false, "False if invalid decimal separator (parseInt would parse this to a valid digit number)");
+});
