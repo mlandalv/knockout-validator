@@ -68,3 +68,31 @@ test("validator.message", function () {
     target("foobar");
     equal(target.validator.message(), ko.validator.messages.number, "Message contains the first error in the errors array (number)");
 });
+
+test("Extending rules", function () {
+    var target = ko.observable().extend({
+        rules: {
+            required: true
+        }
+    });
+
+    // Add the number rules with custom message, but also change the required message
+    target.extend({
+        rules: {
+            number: true,
+            messages: {
+                required: "required",
+                number: "number"
+            }
+        }
+    });
+
+    target.validator.validate();
+
+    equal(target.validator.valid(), false, "False since no value is specified");
+    equal(target.validator.message(), "required", "Required message was overridden on second extend call");
+
+    target("foobar");
+    equal(target.validator.valid(), false, "False since value is not a number");
+    equal(target.validator.message(), "number", "Using overridden error message");
+});
