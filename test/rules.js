@@ -121,7 +121,6 @@ test("Range", function () {
     var target = ko.observable(),
         rule = ko.validator.methods.range;
 
-
     // Insert param values to test default values since function is used
     equal(ko.validator.messages.range({ min: 1, max: 2 }), "Please enter a value between 1 and 2.", "Verify default message");
     equal(rule(target(), target), true, "True if value is not set (optional)");

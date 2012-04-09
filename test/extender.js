@@ -96,3 +96,25 @@ test("Extending rules", function () {
     equal(target.validator.valid(), false, "False since value is not a number");
     equal(target.validator.message(), "number", "Using overridden error message");
 });
+
+test("Rule dependencies", function () {
+    var requireNumber = ko.observable(false),
+        target = ko.observable().extend({
+            rules: {
+                required: ko.computed(function () {
+                    return requireNumber();
+                }),
+                number: requireNumber
+            }
+        });
+
+    target.validator.validate();
+    equal(target.validator.valid(), true, "True since the dependency doesn't require a numeric value");
+
+    requireNumber(true);
+    equal(target.validator.valid(), false, "False since a numeric value is required");
+    target("foobar");
+    equal(target.validator.valid(), false, "False since the value is not numeric");
+    requireNumber(false);
+    equal(target.validator.valid(), true, "True since required dependency is removed");
+});
