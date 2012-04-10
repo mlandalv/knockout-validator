@@ -135,7 +135,7 @@ test("Range", function () {
     target(0);
     equal(rule(target(), target, { min: 1, max: 2 }), false, "False if value less than min");
     target(3);
-    equal(rule(target(), target, { min: 1, max: 2 }), false, "False if value less greater than max");
+    equal(rule(target(), target, { min: 1, max: 2 }), false, "False if value greater than max");
 
     target("foobar");
     equal(rule(target(), target, { min: 1, max: 2 }), false, "False if value not number");
