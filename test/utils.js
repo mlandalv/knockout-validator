@@ -16,24 +16,22 @@ test("format", function () {
 });
 
 /*
-    ko.validator.utils.isRuleEnabled
+    ko.validator.utils.unwrap
 */
-test("isRuleEnabled", function () {
-    var utils = ko.validator.utils;
+test("unwrap", function () {
+    var utils = ko.validator.utils, res;
 
-    equal(utils.isRuleEnabled(true), true, "Enabled if param is true");
-    equal(utils.isRuleEnabled(false), false, "Disabled if param is false");
-    equal(utils.isRuleEnabled(function () { return true; }), true, "Enabled if param is function returning true");
-    equal(utils.isRuleEnabled(function () { return false; }), false, "Disabled if param is function returning false");
-    equal(utils.isRuleEnabled({}), true, "Enabled if param is object");
+    equal(utils.unwrap(true), true, "Enabled if param is true");
+    equal(utils.unwrap(function () { return true; }), true, "Enabled if param is function returning true");
+    deepEqual(utils.unwrap({ foo: "bar" }), { foo: "bar" }, "Object is returned");
 
     // ko.observable
-    equal(utils.isRuleEnabled(ko.observable(true)), true, "Enabled if param is observable with value true");
-    equal(utils.isRuleEnabled(ko.observable(false)), false, "Disabled if param is observable with value false");
+    equal(utils.unwrap(ko.observable(true)), true, "Enabled if param is observable with value true");
+    deepEqual(utils.unwrap(ko.observable({ foo: "bar" })), { foo: "bar" }, "Object is unwrapped from observable");
 
     // ko.computed
-    equal(utils.isRuleEnabled(ko.computed(function () { return true; })), true, "Enabled if param is computed returning true");
-    equal(utils.isRuleEnabled(ko.computed(function () { return false; })), false, "Disabled if param is computed returning false");
+    equal(utils.unwrap(ko.computed(function () { return true; })), true, "Enabled if param is computed returning true");
+    deepEqual(utils.unwrap(ko.computed(function () { return { foo: "bar" }; })), { foo: "bar" }, "Object is unwrapped from computed");
 });
 
 /*

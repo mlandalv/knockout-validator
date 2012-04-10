@@ -39,7 +39,7 @@
     var validator = ko.validator,
         validateArray,
         validateObject,
-        isRuleEnabled,
+        unwrap,
         validateObservable,
         isValidatable = function (element) {
             /// <summary>Checks if the element is validatable.</summary>
@@ -110,21 +110,20 @@
         return result;
     };
 
-    isRuleEnabled = function (value) {
-        /// <summary>Whether or not the rule should be run. Value can be any object: true, false, function, ko.computable etc.
-        /// If the value (or return value) isn't explicitly false then this will return true.</summary>
-        /// <param name="value">The rule's option value.</param>
-        var isEnabled;
+    unwrap = function (value) {
+        /// <summary>Unwraps the value, whether it's a plan js object, observable or function.</summary>
+        /// <param name="value">The value to unwrap.</param>
+        var result;
 
         if (ko.isObservable(value)) {
-            isEnabled = ko.utils.unwrapObservable(value) !== false;
+            result = ko.utils.unwrapObservable(value);
         } else if (typeof value === "function") {
-            isEnabled = value() !== false;
+            result = value();
         } else {
-            isEnabled = value !== false;
+            result = value;
         }
 
-        return isEnabled;
+        return result;
     };
 
     validateObservable = (function () {
@@ -150,23 +149,26 @@
                 param = val.rules[ruleName],
                 messages,
                 errorMessage,
-                isValid;
+                isValid,
+                paramValue;
 
             // The messages property contains overridden default error messages and is not a rule
             if (ruleName === "messages") {
                 return;
             }
 
+            paramValue = unwrap(param);
+
             // Check if the rule should be run, e.g. if you have number: false, that rule should not be run.
-            if (isRuleEnabled(param)) {
-                isValid = method(target(), target, param) !== false;
+            if (paramValue !== false) {
+                isValid = method(target(), target, paramValue) !== false;
 
                 // Get overridden or default error message.
                 if (!isValid) {
                     messages = val.rules.messages || {};
                     errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                    val.errors.push(formatMessage(errorMessage, param));
+                    val.errors.push(formatMessage(errorMessage, paramValue));
                 }
             }
         }
@@ -188,10 +190,7 @@
 
                 for (ruleName in rules) {
                     if (rules.hasOwnProperty(ruleName)) {
-                        // The property is the name of a rule
-                        if (ruleName !== "messages") {
-                            validateRule(target, ruleName);
-                        }
+                        validateRule(target, ruleName);
                     }
                 }
 
@@ -210,8 +209,8 @@
 
     validator.utils = {
         format: format,
-        isRuleEnabled: isRuleEnabled,
         isValidatable: isValidatable,
+        unwrap: unwrap,
         validateArray: validateArray,
         validateObject: validateObject,
         validateObservable: validateObservable
