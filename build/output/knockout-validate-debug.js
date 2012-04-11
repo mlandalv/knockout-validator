@@ -5,6 +5,7 @@
     "use strict";
 
     var validator = {
+        version: "0.1-pre",
         methods: {},
         messages: {},
         optional: function (target) {

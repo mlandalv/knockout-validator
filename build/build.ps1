@@ -21,7 +21,7 @@ function Build-KnockoutValidate()
 
     foreach ($file in $sourceFiles)
     {
-        Add-Content -Encoding UTF8 $output (Get-Content $file)
+        Add-Content -Encoding UTF8 $output ((Get-Content $file) -replace "##VERSION##", "$version")
     }
 }
 
