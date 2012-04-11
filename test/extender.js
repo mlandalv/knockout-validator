@@ -109,7 +109,7 @@ test("Extending rules", function () {
     equal(target.validator.message(), "number", "Using overridden error message");
 });
 
-test("Rule dependencies", function () {
+test("Rule dependencies (observable and computed)", function () {
     var requireNumber = ko.observable(false),
         target = ko.observable().extend({
             rules: {
@@ -129,15 +129,37 @@ test("Rule dependencies", function () {
     equal(target.validator.valid(), false, "False since the value is not numeric");
     requireNumber(false);
     equal(target.validator.valid(), true, "True since required dependency is removed");
+});
 
-    requireNumber = ko.observable(true);
-    target = ko.observable("foobar").extend({
-        rules: {
-            number: requireNumber
-        }
-    });
+test("Rule dependencies (single observable)", function () {
+    var requireNumber = ko.observable(true),
+        target = ko.observable("foobar").extend({
+            rules: {
+                number: requireNumber
+            }
+        });
+
     equal(target.validator.valid(), true, "Default true since the rules extender doesn't force a validation");
     requireNumber(false);
     requireNumber(true);
     equal(target.validator.valid(), false, "False since changing a dependency causes validation if the element isn't optional");
+});
+
+test("Rule dependencies (race condition)", function () {
+    var number = ko.observable(1),
+        target = ko.observable("foobar").extend({
+            rules: {
+                required: ko.computed(function () {
+                    return number() === 1;
+                }),
+                digits: true
+            }
+        }),
+        validator = target.validator;
+
+    equal(validator.valid(), true, "Default true since the rules extender doesn't force a validation");
+    target("");
+    equal(validator.valid(), false, "False since value is required");
+    number(0); // disables required rule
+    equal(validator.valid(), true, "True since required rule has been disabled");
 });
