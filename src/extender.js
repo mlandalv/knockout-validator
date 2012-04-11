@@ -9,17 +9,18 @@
             /// <summary>Initialize the target with validator data.</summary>
             /// <param name="target">Target element, e.g. ko.observable.</param>
             var errors = ko.observableArray(),
+                message = ko.computed(function () {
+                    return errors()[0];
+                }),
                 val = {
                     rules: {
                         messages: {}
                     },
                     errors: errors,
                     valid: ko.computed(function () {
-                        return errors().length === 0;
+                        return message() === undefined;
                     }),
-                    message: ko.computed(function () {
-                        return errors()[0] || undefined;
-                    }),
+                    message: message,
                     validate: function () {
                         return utils.validateObservable(target);
                     }

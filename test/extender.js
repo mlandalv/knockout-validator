@@ -67,6 +67,18 @@ test("validator.message", function () {
 
     target("foobar");
     equal(target.validator.message(), ko.validator.messages.number, "Message contains the first error in the errors array (number)");
+
+    // When valid is false, message must be readable
+    target.validator.valid.subscribe(function (newValue) {
+        // If valid, then the message should be undefined
+        if (newValue) {
+            equal(target.validator.message(), undefined, "When valid is true, message is undefined");
+        } else { // If not valid, then the message shouldn't be undefined
+            equal(typeof target.validator.message(), "string", "If not valid, then the message is of type string");
+        }
+    });
+
+    target("foo");
 });
 
 test("Extending rules", function () {
