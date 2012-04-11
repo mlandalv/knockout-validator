@@ -112,9 +112,20 @@ test("Rule dependencies", function () {
     equal(target.validator.valid(), true, "True since the dependency doesn't require a numeric value");
 
     requireNumber(true);
-    equal(target.validator.valid(), false, "False since a numeric value is required");
+    equal(target.validator.valid(), true, "True since the observable doesn't have a value (is optional)");
     target("foobar");
     equal(target.validator.valid(), false, "False since the value is not numeric");
     requireNumber(false);
     equal(target.validator.valid(), true, "True since required dependency is removed");
+
+    requireNumber = ko.observable(true);
+    target = ko.observable("foobar").extend({
+        rules: {
+            number: requireNumber
+        }
+    });
+    equal(target.validator.valid(), true, "Default true since the rules extender doesn't force a validation");
+    requireNumber(false);
+    requireNumber(true);
+    equal(target.validator.valid(), false, "False since changing a dependency causes validation if the element isn't optional");
 });

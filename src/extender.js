@@ -37,7 +37,9 @@
             /// <summary>Creates a callback that validates the target when run.</summary>
             /// <param name="target">Target to validate.</param>
             return function () {
-                utils.validateObservable(target);
+                if (!validator.optional(target)) {
+                    utils.validateObservable(target);
+                }
             };
         }
 
