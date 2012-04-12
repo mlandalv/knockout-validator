@@ -105,37 +105,38 @@
         }
 
         function validateRule(target, ruleName) {
-            /// <summary>Validate the specific rule against the target observable. If validation failed, the error messeage
-            /// will be added to the errors collection.</summary>
+            /// <summary>Validate the specific rule against the target observable. If validation failed, the error message is returned.</summary>
             /// <param name="target">Observable to validate.</param>
-            /// <param name="target">Observable to validate.</param>
+            /// <param name="ruleName">Name of the rule.</param>
+            /// <returns>Error message if rule fails, otherwise undefined.</returns>
             var method = validator.methods[ruleName],
                 val = target.validator,
                 param = val.rules[ruleName],
                 messages,
                 errorMessage,
                 isValid,
-                paramValue;
+                paramValue,
+                result;
 
             // The messages property contains overridden default error messages and is not a rule
-            if (ruleName === "messages") {
-                return;
-            }
+            if (ruleName !== "messages") {
+                paramValue = unwrap(param);
 
-            paramValue = unwrap(param);
+                // Check if the rule should be run, e.g. if you have number: false, that rule should not be run.
+                if (paramValue !== false) {
+                    isValid = method(target(), target, paramValue) !== false;
 
-            // Check if the rule should be run, e.g. if you have number: false, that rule should not be run.
-            if (paramValue !== false) {
-                isValid = method(target(), target, paramValue) !== false;
+                    // Get overridden or default error message.
+                    if (!isValid) {
+                        messages = val.rules.messages || {};
+                        errorMessage = messages[ruleName] || validator.messages[ruleName];
 
-                // Get overridden or default error message.
-                if (!isValid) {
-                    messages = val.rules.messages || {};
-                    errorMessage = messages[ruleName] || validator.messages[ruleName];
-
-                    val.errors.push(formatMessage(errorMessage, paramValue));
+                        result = formatMessage(errorMessage, paramValue);
+                    }
                 }
             }
+
+            return result;
         }
 
         return function (target) {
@@ -146,18 +147,26 @@
                 rules,
                 value,
                 val,
-                isValid = true;
+                isValid = true,
+                errors = [],
+                ruleResult;
 
             if (isValidatable(target)) {
                 val = target.validator;
                 rules = val.rules;
-                val.errors.removeAll();
 
                 for (ruleName in rules) {
                     if (rules.hasOwnProperty(ruleName)) {
-                        validateRule(target, ruleName);
+                        ruleResult = validateRule(target, ruleName);
+
+                        // If the rule fails validation then the error message is returned
+                        if (ruleResult !== undefined) {
+                            errors.push(ruleResult);
+                        }
                     }
                 }
+
+                val.errors(errors);
 
                 isValid = val.valid();
             } else {

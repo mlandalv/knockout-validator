@@ -109,57 +109,28 @@ test("Extending rules", function () {
     equal(target.validator.message(), "number", "Using overridden error message");
 });
 
-test("Rule dependencies (observable and computed)", function () {
-    var requireNumber = ko.observable(false),
+test("Rule dependencies", function () {
+    var require = ko.observable(false),
+        number = ko.observable(false),
         target = ko.observable().extend({
             rules: {
-                required: ko.computed(function () {
-                    return requireNumber();
-                }),
-                number: requireNumber
+                required: require,
+                number: number
             }
         });
 
     target.validator.validate();
-    equal(target.validator.valid(), true, "True since the dependency doesn't require a numeric value");
+    equal(target.validator.valid(), true, "True since the dependency doesn't require a value");
 
-    requireNumber(true);
-    equal(target.validator.valid(), true, "True since the observable doesn't have a value (is optional)");
+    require(true);
+    number(true);
+    equal(target.validator.valid(), true, "Dependencies do not cause validation if valid is true and value is not set (the user must have a chance to set the value)");
+
     target("foobar");
     equal(target.validator.valid(), false, "False since the value is not numeric");
-    requireNumber(false);
-    equal(target.validator.valid(), true, "True since required dependency is removed");
-});
 
-test("Rule dependencies (single observable)", function () {
-    var requireNumber = ko.observable(true),
-        target = ko.observable("foobar").extend({
-            rules: {
-                number: requireNumber
-            }
-        });
-
-    equal(target.validator.valid(), true, "Default true since the rules extender doesn't force a validation");
-    requireNumber(false);
-    requireNumber(true);
-    equal(target.validator.valid(), false, "False since changing a dependency causes validation if the element isn't optional");
-});
-
-test("Rule dependencies (race condition)", function () {
-    var number = ko.observable(1),
-        target = ko.observable("foobar").extend({
-            rules: {
-                required: ko.computed(function () {
-                    return number() === 1;
-                }),
-                digits: true
-            }
-        }),
-        validator = target.validator;
-
-    equal(validator.valid(), true, "Default true since the rules extender doesn't force a validation");
     target("");
-    equal(validator.valid(), false, "False since value is required");
-    number(0); // disables required rule
-    equal(validator.valid(), true, "True since required rule has been disabled");
+    equal(target.validator.valid(), false, "False since a value is required");
+    require(false);
+    equal(target.validator.valid(), true, "True since value no longer is required");
 });
