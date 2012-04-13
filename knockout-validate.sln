@@ -6,7 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{50F2E36F-09D
 		src\core-utils.js = src\core-utils.js
 		src\core.js = src\core.js
 		src\extender.js = src\extender.js
-		src\rules.js = src\rules.js
+		src\methods.js = src\methods.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{7CEABF08-E201-4336-B99E-C712A1EF0318}"
@@ -17,7 +17,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C891CB19-DDB7-4F41-82D7-106F29528571}"
 	ProjectSection(SolutionItems) = preProject
 		test\extender.js = test\extender.js
-		test\rules.js = test\rules.js
+		test\methods.js = test\methods.js
 		test\test-suite.css = test\test-suite.css
 		test\test-suite.html = test\test-suite.html
 		test\utils.js = test\utils.js
