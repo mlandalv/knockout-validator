@@ -1,4 +1,4 @@
 src\core.js
-src\core-utils.js
+src\utils.js
 src\methods.js
-src\extender.js
+src\extenders.js

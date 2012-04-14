@@ -7,19 +7,16 @@
         unwrap,
         validateObservable,
         isValidatable = function (element) {
-            /// <summary>Checks if the element is validatable.</summary>
             return element.validator !== undefined;
         },
         isArray = Array.isArray || function (obj) {
-            /// <summary>Checks if the object is an array.</summary>
-            /// <param name="obj">The object to check if it is an array.</param>
-            /// <returns>True if obj is an array, otherwise false.</returns>
             return Object.prototype.toString.call(obj) === "[object Array]";
         },
         isFunction = function (obj) {
             return typeof obj === "function";
         },
         format = function (input) {
+            /// <summary></summary>
             var args = Array.prototype.slice.call(arguments, 1);
 
             return input.replace(/\{(\d+)\}/g, function (match, number) {
@@ -27,16 +24,20 @@
             });
         };
 
-    validateArray = function (array) {
+    validateArray = function (obj) {
         /// <summary>Validate all objects in the array.</summary>
-        /// <param name="array">The array whose objects should be validated.</param>
+        /// <param name="obj">The array whose objects should be validated.</param>
         /// <returns>True if all objects passed validation, otherwise false.</returns>
         var result = true, // Default to true if the array if empty
             tempResult,
             i;
 
-        for (i = 0; i < array.length; i += 1) {
-            tempResult = validateObject(array[i]);
+        if (!isArray(obj)) {
+            throw new Error("Object is not an array");
+        }
+
+        for (i = 0; i < obj.length; i += 1) {
+            tempResult = validateObject(obj[i]);
 
             if (!tempResult) {
                 result = tempResult;
