@@ -34,7 +34,7 @@
 
     ko.validator = validator;
 }(ko));
-(function (ko) {
+(function (ko, validator) {
     "use strict";
 
     var validator = ko.validator,

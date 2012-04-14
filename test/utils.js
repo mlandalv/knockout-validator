@@ -98,14 +98,13 @@ test("validateObject", function () {
     var utils = ko.validator.utils,
         target;
 
-    target = {};
-    equal(utils.validateObject(target), true, "True if object contains no properties");
+    equal(utils.validateObject({}), true, "True if object contains no properties");
 
-    target = true;
-    equal(utils.validateObject(target), true, "True if object is boolean");
+    equal(utils.validateObject(true), true, "True if object is boolean");
+    equal(utils.validateObject(false), true, "True if object is boolean");
 
-    target = 1;
-    equal(utils.validateObject(target), true, "True if object is number");
+    equal(utils.validateObject(0), true, "True if object is number");
+    equal(utils.validateObject(1), true, "True if object is number");
 
     target = ko.observable();
     equal(utils.validateObject(target), true, "True if observable is not extended with rules");
@@ -141,15 +140,24 @@ test("validateArray", function () {
         target;
 
     target = [];
-    equal(utils.validateObject(target), true, "True if empty array");
+    equal(utils.validateArray(target), true, "True if empty array");
 
     target = [true, false, 1, {}, ko.observable(), [], ko.observableArray()];
-    equal(utils.validateObject(target), true, "True if array only contains non-validatable objects");
+    equal(utils.validateArray(target), true, "True if array only contains non-validatable objects");
 
     target = [{
         prop1: true,
         prop2: ko.observable().extend({ rules: { required: true } })
     },
     1];
-    equal(utils.validateObject(target), false, "False if any object is validatable and fails validation");
+    equal(utils.validateArray(target), false, "False if any object is validatable and fails validation");
+
+    raises(function () { utils.validateArray({}); }, "Error if input is object");
+    raises(function () { utils.validateArray(); }, "Error if input is undefined");
+    raises(function () { utils.validateArray(null); }, "Error if input is null");
+    raises(function () { utils.validateArray(true); }, "Error if input is boolean");
+    raises(function () { utils.validateArray(1); }, "Error if input is number");
+    raises(function () { utils.validateArray(function () { }); }, "Error if function");
+    raises(function () { utils.validateArray(ko.observable()); }, "Error if ko.observable");
+    raises(function () { utils.validateArray(ko.observableArray()); }, "Error if ko.observableArray");
 });
