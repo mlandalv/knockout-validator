@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fragments", "fragments", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "output", "output", "{73ED6AA8-5F26-418E-AC88-B01F190907F4}"
 	ProjectSection(SolutionItems) = preProject
-		build\output\knockout-validate-debug.js = build\output\knockout-validate-debug.js
+		build\output\knockout-validator-debug.js = build\output\knockout-validator-debug.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86F7540D-1CFD-4E75-9678-2E1461B85100}"
