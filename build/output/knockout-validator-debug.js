@@ -144,8 +144,8 @@
             /// <param name="ruleName">Name of the rule.</param>
             /// <returns>Error message if rule fails, otherwise undefined.</returns>
             var method = validator.methods[ruleName],
-                val = target.validator,
-                param = val.rules[ruleName],
+                targetValidator = target.validator,
+                param = targetValidator.rules[ruleName],
                 messages,
                 errorMessage,
                 isValid,
@@ -162,7 +162,7 @@
 
                     // Get overridden or default error message.
                     if (!isValid) {
-                        messages = val.rules.messages || {};
+                        messages = targetValidator.rules.messages;
                         errorMessage = messages[ruleName] || validator.messages[ruleName];
 
                         result = formatMessage(errorMessage, paramValue);
