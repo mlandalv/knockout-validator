@@ -1,8 +1,8 @@
 /// <reference path="../libs/qunit-git.js" />
 /// <reference path="../libs/knockout-2.0.0.js" />
-/// <reference path="../build/output/knockout-validate-debug.js" />
+/// <reference path="../build/output/knockout-validator-debug.js" />
 
-module("Validator Utils");
+module("Utils");
 
 /*
     ko.validator.utils.format
@@ -19,19 +19,21 @@ test("format", function () {
     ko.validator.utils.unwrap
 */
 test("unwrap", function () {
-    var utils = ko.validator.utils, res;
+    var utils = ko.validator.utils, unwrap = utils.unwrap, res;
 
-    equal(utils.unwrap(true), true, "Enabled if param is true");
-    equal(utils.unwrap(function () { return true; }), true, "Enabled if param is function returning true");
-    deepEqual(utils.unwrap({ foo: "bar" }), { foo: "bar" }, "Object is returned");
+    equal(unwrap(true), true, "Enabled if param is true");
+    equal(unwrap(function () { return true; }), true, "Enabled if param is function returning true");
+    deepEqual(unwrap({ foo: "bar" }), { foo: "bar" }, "Object is returned");
 
     // ko.observable
-    equal(utils.unwrap(ko.observable(true)), true, "Enabled if param is observable with value true");
-    deepEqual(utils.unwrap(ko.observable({ foo: "bar" })), { foo: "bar" }, "Object is unwrapped from observable");
+    equal(unwrap(ko.observable(true)), true, "Enabled if param is observable with value true");
+    deepEqual(unwrap(ko.observable({ foo: "bar" })), { foo: "bar" }, "Object is unwrapped from observable");
+    equal(unwrap(ko.observable(function () { return true; })), true, "If the observable contains a function, the function's value is returned");
 
     // ko.computed
-    equal(utils.unwrap(ko.computed(function () { return true; })), true, "Enabled if param is computed returning true");
-    deepEqual(utils.unwrap(ko.computed(function () { return { foo: "bar" }; })), { foo: "bar" }, "Object is unwrapped from computed");
+    equal(unwrap(ko.computed(function () { return true; })), true, "Returns computeds value");
+    deepEqual(unwrap(ko.computed(function () { return { foo: "bar" }; })), { foo: "bar" }, "Object is unwrapped from computed");
+    equal(unwrap(ko.computed(function () { return function () { return true; }; })), true, "If the computed returns a function, the function's value is returned");
 });
 
 /*

@@ -75,17 +75,14 @@
         return result;
     };
 
-    unwrap = function (value) {
-        /// <summary>Unwraps the value, whether it's a plan js object, observable or function.</summary>
-        /// <param name="value">The value to unwrap.</param>
-        var result;
+    unwrap = function (obj) {
+        /// <summary>Unwraps the object, whether it's a plan js object, observable or function. So unlike ko.utils.unwrapObservable
+        /// this method also unwraps functions and return their values.</summary>
+        /// <param name="obj">The object to unwrap.</param>
+        var result = ko.utils.unwrapObservable(obj);
 
-        if (ko.isObservable(value)) {
-            result = ko.utils.unwrapObservable(value);
-        } else if (typeof value === "function") {
-            result = value();
-        } else {
-            result = value;
+        if (typeof result === "function") {
+            result = result();
         }
 
         return result;

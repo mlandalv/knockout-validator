@@ -1,6 +1,6 @@
 /// <reference path="../libs/qunit-git.js" />
 /// <reference path="../libs/knockout-2.0.0.js" />
-/// <reference path="../build/output/knockout-validate-debug.js" />
+/// <reference path="../build/output/knockout-validator-debug.js" />
 
 module("Rules extender");
 
