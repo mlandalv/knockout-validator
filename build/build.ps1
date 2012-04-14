@@ -6,7 +6,7 @@
 function Build-KnockoutValidate()
 {
     $baseDir = [System.IO.Path]::GetFullPath((Join-Path (Get-ScriptDirectory) ".."))
-    $output = Join-Path $baseDir "build\output\knockout-validate-debug.js"
+    $output = Join-Path $baseDir "build\output\knockout-validator-debug.js"
     $version = Get-Content (Join-Path $baseDir "build\fragments\version.txt")
     $header = (Get-Content (Join-Path $baseDir "build\fragments\header.txt")) -replace "##VERSION##", "$version"
     $sourceFiles = Get-Content (Join-Path $baseDir "build\fragments\source-files.txt") | % { Join-Path $baseDir $_ }
