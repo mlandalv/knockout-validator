@@ -269,3 +269,75 @@ test("email", function () {
     target("u-s.er@domain.com");
     equal(method(target(), target), true, "True if address contains hyphen and dot");
 });
+
+test("minlength", function () {
+    var target = ko.observable(),
+        method = ko.validator.methods.minlength;
+
+    equal(ko.validator.messages.minlength, "Please enter at least {0} characters.", "Verify default message");
+    equal(method(target(), target), true, "True if value is not set (optional)");
+
+    target("foo");
+    equal(method(target(), target, 3), true, "True if length equal to param");
+    target("foobar");
+    equal(method(target(), target, 3), true, "True if length greater than param");
+    target("f");
+    equal(method(target(), target, 3), false, "False if length less than param");
+
+    target(true);
+    equal(method(target(), target, 3), false, "False if value is boolean");
+    target(new Date());
+    equal(method(target(), target, 3), false, "False if value is date");
+    target(function () { return true; });
+    equal(method(target(), target, 3), false, "False if value is function");
+});
+
+test("maxlength", function () {
+    var target = ko.observable(),
+        method = ko.validator.methods.maxlength;
+
+    equal(ko.validator.messages.maxlength, "Please enter no more than {0} characters.", "Verify default message");
+    equal(method(target(), target), true, "True if value is not set (optional)");
+
+    target("foobar");
+    equal(method(target(), target, 6), true, "True if length equal to param");
+    target("foo");
+    equal(method(target(), target, 6), true, "True if length less than param");
+    target("foobarfoobar");
+    equal(method(target(), target, 6), false, "False if length greater than param");
+
+    target(true);
+    equal(method(target(), target, 6), false, "False if value is boolean");
+    target(new Date());
+    equal(method(target(), target, 6), false, "False if value is date");
+    target(function () { return true; });
+    equal(method(target(), target, 6), false, "False if value is function");
+});
+
+test("rangelength", function () {
+    var target = ko.observable(),
+        method = ko.validator.methods.rangelength;
+
+    // Insert param values to test default values since function is used
+    equal(ko.validator.messages.rangelength({ min: 1, max: 2 }), "Please enter a value between 1 and 2 characters long.", "Verify default message");
+    equal(method(target(), target), true, "True if value is not set (optional)");
+
+    target("foo");
+    equal(method(target(), target, { min: 3, max: 6 }), true, "True if value equal to min");
+    target("foob");
+    equal(method(target(), target, { min: 3, max: 6 }), true, "True if between min and max");
+    target("foobar");
+    equal(method(target(), target, { min: 3, max: 6 }), true, "True if value equal to max");
+
+    target("f");
+    equal(method(target(), target, { min: 3, max: 6 }), false, "False if value less than min");
+    target("foobarfoobar");
+    equal(method(target(), target, { min: 3, max: 6 }), false, "False if value greater than max");
+
+    target(true);
+    equal(method(target(), target, { min: 3, max: 6 }), false, "False if value is boolean");
+    target(new Date());
+    equal(method(target(), target, { min: 3, max: 6 }), false, "False if value is date");
+    target(function () { return true; });
+    equal(method(target(), target, { min: 3, max: 6 }), false, "False if value is function");
+});
