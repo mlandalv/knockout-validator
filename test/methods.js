@@ -334,6 +334,8 @@ test("rangelength", function () {
     target("foobarfoobar");
     equal(method(target(), target, { min: 3, max: 6 }), false, "False if value greater than max");
 
+    target(4);
+    equal(method(target(), target, { min: 3, max: 6 }), false, "False if value is number");
     target(true);
     equal(method(target(), target, { min: 3, max: 6 }), false, "False if value is boolean");
     target(new Date());

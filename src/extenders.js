@@ -67,7 +67,7 @@
             /// for overridden rule messages.</summary>
             /// <param name="target">Observable to Extend.</param>
             /// <param name="option">Rules and eventual overridden messages.</param>
-            if (target.validator === undefined) {
+            if (!utils.isValidatable(target)) {
                 initialize(target);
             }
 
