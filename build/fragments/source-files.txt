@@ -2,3 +2,4 @@ src\core.js
 src\utils.js
 src\methods.js
 src\extenders.js
+src\bindings.js

@@ -5,21 +5,44 @@
     <meta charset="utf-8" />
     <link type="text/css" href="test-suite.css" rel="Stylesheet" />
     <link type="text/css" href="../libs/qunit-git.css" rel="Stylesheet" />
-    <script type="text/javascript" src="../libs/knockout-2.0.0.js"></script>
+    <script type="text/javascript" src="../libs/knockout-2.1.0.js"></script>
     <script type="text/javascript" src="../build/output/knockout-validator-debug.js"></script>
     <script type="text/javascript" src="../libs/qunit-git.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="methods.js"></script>
     <script type="text/javascript" src="extenders.js"></script>
+    <script type="text/javascript" src="bindings.js"></script>
 </head>
 <body>
-    <h1 id="qunit-header">jQuery Closable Test Suite</h1>
+    <h1 id="qunit-header">Knockout Validate Test Suite</h1>
     <h2 id="qunit-banner"></h2>
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
     <div id="qunit-fixture">
-        
+        <div id="RequiredAttributeContext">
+            <input type="text" required="required" data-bind="validatable: required" />
+            <input type="text" required="required" data-bind="validatable: requiredCustom" data-val-required="Required message" />
+        </div>
+
+        <div id="MinAttributeContext">
+            <input type="number" min="1" data-bind="validatable: min" />
+            <input type="number" min="1" data-bind="validatable: minCustom" data-val-min="Min: {0}" />
+        </div>
+
+        <div id="MaxAttributeContext">
+            <input type="number" max="10" data-bind="validatable: max" />
+            <input type="number" max="10" data-bind="validatable: maxCustom" data-val-max="Max: {0}" />
+        </div>
+
+        <div id="MaxLengthAttributeContext">
+            <input type="text" maxlength="20" data-bind="validatable: maxLength" />
+            <input type="text" maxlength="20" data-bind="validatable: maxLengthCustom" data-val-maxlength="MaxLength: {0}" />
+        </div>
+
+        <div id="ValidationClassTest">
+            <input id="reqTest" type="text" required="required" data-bind="validatable: required" />
+        </div>
     </div>
 </body>
 </html>

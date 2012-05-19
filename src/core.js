@@ -5,6 +5,10 @@
         version: "##VERSION##",
         methods: {},
         messages: {},
+        options: {
+            validClass: "valid",
+            invalidClass: "invalid"
+        },
         optional: function (target) {
             /// <summary>Checks if the target observable doesn't require a value.</summary>
             /// <param name="target">The target observable.</param>
