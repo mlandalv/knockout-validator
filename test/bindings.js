@@ -8,7 +8,7 @@ All tests are made on input elements although they also work on select and texta
 and other elements.
 */
 
-module("Validatable Binding Handler");
+module("Validate Binding Handler");
 
 test("required attribute", function () {
     var target = ko.observable(),
@@ -90,4 +90,27 @@ test("Validation classes applied correctly", function () {
 
     viewModel.required("foobar");
     equal(domElement.className, "valid", "Valid if all rules pass");
+});
+
+test("Rules binding", function () {
+    var target = ko.observable(),
+        viewModel = {
+            requiredDefault: ko.observable(),
+            requiredCustom: ko.observable(),
+            requiredComputed: ko.observable(),
+            isRequired: ko.computed(function () {
+            })
+        },
+        domElement = document.getElementById("reqTest");
+
+    ko.applyBindings(viewModel, document.getElementById("RulesBindingContext"));
+
+    ok(viewModel.requiredDefault.validator.rules.required, "Required method added");
+    equal(viewModel.requiredDefault.validator.rules.messages.required, undefined, "No custom required message");
+
+    ok(viewModel.requiredCustom.validator.rules.required, "Required method added");
+    equal(viewModel.requiredCustom.validator.rules.messages.required, "Required message", "Custom required message");
+
+    equal(viewModel.requiredComputed.validator.rules.required, viewModel.isRequired, "Required method added");
+    equal(viewModel.requiredComputed.validator.rules.messages.required, undefined, "No custom required message");
 });

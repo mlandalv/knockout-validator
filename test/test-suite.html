@@ -21,27 +21,33 @@
     <ol id="qunit-tests"></ol>
     <div id="qunit-fixture">
         <div id="RequiredAttributeContext">
-            <input type="text" required="required" data-bind="validatable: required" />
-            <input type="text" required="required" data-bind="validatable: requiredCustom" data-val-required="Required message" />
+            <input type="text" required="required" data-bind="validate: required" />
+            <input type="text" required="required" data-bind="validate: requiredCustom" data-val-required="Required message" />
         </div>
 
         <div id="MinAttributeContext">
-            <input type="number" min="1" data-bind="validatable: min" />
-            <input type="number" min="1" data-bind="validatable: minCustom" data-val-min="Min: {0}" />
+            <input type="number" min="1" data-bind="validate: min" />
+            <input type="number" min="1" data-bind="validate: minCustom" data-val-min="Min: {0}" />
         </div>
 
         <div id="MaxAttributeContext">
-            <input type="number" max="10" data-bind="validatable: max" />
-            <input type="number" max="10" data-bind="validatable: maxCustom" data-val-max="Max: {0}" />
+            <input type="number" max="10" data-bind="validate: max" />
+            <input type="number" max="10" data-bind="validate: maxCustom" data-val-max="Max: {0}" />
         </div>
 
         <div id="MaxLengthAttributeContext">
-            <input type="text" maxlength="20" data-bind="validatable: maxLength" />
-            <input type="text" maxlength="20" data-bind="validatable: maxLengthCustom" data-val-maxlength="MaxLength: {0}" />
+            <input type="text" maxlength="20" data-bind="validate: maxLength" />
+            <input type="text" maxlength="20" data-bind="validate: maxLengthCustom" data-val-maxlength="MaxLength: {0}" />
         </div>
 
         <div id="ValidationClassTest">
-            <input id="reqTest" type="text" required="required" data-bind="validatable: required" />
+            <input id="reqTest" type="text" required="required" data-bind="validate: required" />
+        </div>
+
+        <div id="RulesBindingContext">
+            <input type="text" data-bind="validate: requiredDefault, rules: { required: true }" />
+            <input type="text" data-bind="validate: requiredCustom, rules: { required: true, messages: { required: 'Required message' } }" />
+            <input type="text" data-bind="validate: requiredComputed, rules: { required: isRequired }" />
         </div>
     </div>
 </body>

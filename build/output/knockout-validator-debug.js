@@ -398,12 +398,11 @@
             { attr: "maxlength", method: "maxlength", message: "data-val-maxlength" }
         ];
 
-    ko.bindingHandlers.validatable = {
+    ko.bindingHandlers.validate = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var target = valueAccessor(),
-                rules = {
-                    messages: {}
-                };
+                allBindings = allBindingsAccessor(),
+                rules = koUtils.extend({ messages: {} }, allBindings.rules || {});
 
             // Extract validation property add to the rules object.
             koUtils.arrayForEach(validationAttributes, function (item) {
@@ -416,9 +415,6 @@
                     }
                 }
             });
-
-            // TODO: If both min and max are specified, convert to the range rule?
-            // If so data-val-range should be used to override the default message.
 
             target.extend({
                 rules: rules
