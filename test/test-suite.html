@@ -8,6 +8,7 @@
     <script type="text/javascript" src="../libs/knockout-2.1.0.js"></script>
     <script type="text/javascript" src="../build/output/knockout-validator-debug.js"></script>
     <script type="text/javascript" src="../libs/qunit-git.js"></script>
+    <script type="text/javascript" src="../libs/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="methods.js"></script>
     <script type="text/javascript" src="extenders.js"></script>
@@ -49,6 +50,8 @@
             <input type="text" data-bind="validate: requiredCustom, rules: { required: true, messages: { required: 'Required message' } }" />
             <input type="text" data-bind="validate: requiredComputed, rules: { required: isRequired }" />
         </div>
+
+        <span id="ValidationMessage" data-bind="validationMessage: required"></span>
     </div>
 </body>
 </html>

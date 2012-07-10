@@ -1,14 +1,8 @@
 /// <reference path="../libs/qunit-git.js" />
-/// <reference path="../libs/knockout-2.0.0.js" />
+/// <reference path="../libs/knockout-2.1.0.js" />
 /// <reference path="../build/output/knockout-validator-debug.js" />
 
-/*
-Tests in the file maps against predefined html elements in test-suite.html.
-All tests are made on input elements although they also work on select and textarea,
-and other elements.
-*/
-
-module("Validate Binding Handler");
+module("validate");
 
 test("required attribute", function () {
     var target = ko.observable(),
@@ -86,7 +80,7 @@ test("Validation classes applied correctly", function () {
     equal(domElement.className, "valid", "Valid by default");
 
     viewModel.required(null);
-    equal(domElement.className, "invalid", "Invalid if any rule fail");
+    equal(domElement.className, "error", "Error if any rule fail");
 
     viewModel.required("foobar");
     equal(domElement.className, "valid", "Valid if all rules pass");
@@ -113,4 +107,40 @@ test("Rules binding", function () {
 
     equal(viewModel.requiredComputed.validator.rules.required, viewModel.isRequired, "Required method added");
     equal(viewModel.requiredComputed.validator.rules.messages.required, undefined, "No custom required message");
+});
+
+module("validationMessage");
+
+test("errorClass applied", function () {
+    var validationDomNode = document.getElementById("ValidationMessage"),
+        viewModel = {
+            required: ko.observable()
+        };
+
+    viewModel.required.extend({
+        rules: { required: true }
+    });
+
+    ko.applyBindings(viewModel, validationDomNode);
+
+    ok($(validationDomNode).hasClass(ko.validator.options.errorClass));
+});
+
+test("Error message updated", function () {
+    var validationDomNode = document.getElementById("ValidationMessage"),
+        viewModel = {
+            required: ko.observable()
+        };
+
+    viewModel.required.extend({
+        rules: { required: true }
+    });
+
+    ko.applyBindings(viewModel, validationDomNode);
+
+    viewModel.required(""); // Force validation
+    equal($(validationDomNode).text(), viewModel.required.validator.message(), "Node content set to error message");
+
+    viewModel.required("foobar");
+    equal($(validationDomNode).text(), "", "Error message cleared");
 });

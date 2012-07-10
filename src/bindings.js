@@ -38,7 +38,23 @@
                 isValid = target.validator.valid();
 
             koUtils.toggleDomNodeCssClass(element, validator.options.validClass, isValid);
-            koUtils.toggleDomNodeCssClass(element, validator.options.invalidClass, !isValid);
+            koUtils.toggleDomNodeCssClass(element, validator.options.errorClass, !isValid);
+        }
+    };
+
+    ko.bindingHandlers.validationMessage = {
+        init: function (element) {
+            koUtils.toggleDomNodeCssClass(element, validator.options.errorClass, true);
+        },
+        update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+            var target = valueAccessor(),
+                isValid = target.validator.valid();
+
+            if (isValid) {
+                koUtils.setHtml(element, "");
+            } else {
+                koUtils.setHtml(element, target.validator.message());
+            }
         }
     };
 }(ko));

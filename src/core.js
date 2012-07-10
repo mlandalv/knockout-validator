@@ -7,7 +7,7 @@
         messages: {},
         options: {
             validClass: "valid",
-            invalidClass: "invalid"
+            errorClass: "error"
         },
         optional: function (target) {
             /// <summary>Checks if the target observable doesn't require a value.</summary>
