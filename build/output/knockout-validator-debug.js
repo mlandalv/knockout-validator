@@ -24,7 +24,8 @@
             /// <param name="callback">Callback to run on validate.</param>
             /// <param name="message">Default error message.</param>
 
-            // Make sure the validator object is bound to 'this' when the callback is invoked
+            // Make sure the validator object is bound to 'this' when the callback is invoked.
+            // Knockout provides a polyfill for the bind function if not natively supported.
             this.methods[name] = callback.bind(this);
             this.messages[name] = message;
         },
