@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{50F2E36F-09DA-477F-80ED-C4FEA5005220}"
 	ProjectSection(SolutionItems) = preProject
 		src\bindings.js = src\bindings.js
@@ -17,12 +17,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{7CEABF08
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C891CB19-DDB7-4F41-82D7-106F29528571}"
 	ProjectSection(SolutionItems) = preProject
-		test\bindings.js = test\bindings.js
-		test\extenders.js = test\extenders.js
-		test\methods.js = test\methods.js
+		test\bindingstest.js = test\bindingstest.js
+		test\extenderstest.js = test\extenderstest.js
+		test\methodstest.js = test\methodstest.js
 		test\test-suite.css = test\test-suite.css
 		test\test-suite.html = test\test-suite.html
-		test\utils.js = test\utils.js
+		test\utilstest.js = test\utilstest.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fragments", "fragments", "{19C1118B-74A4-4F3D-AAD6-EB0A83A4E73E}"

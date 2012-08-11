@@ -1,4 +1,4 @@
-﻿(function (ko, validator) {
+﻿(function (ko) {
     "use strict";
 
     var validator = ko.validator,
@@ -16,7 +16,6 @@
             return typeof obj === "function";
         },
         format = function (input) {
-            /// <summary></summary>
             var args = Array.prototype.slice.call(arguments, 1);
 
             return input.replace(/\{(\d+)\}/g, function (match, number) {
@@ -25,18 +24,18 @@
         };
 
     validateArray = function (obj) {
-        /// <summary>Validate all objects in the array.</summary>
-        /// <param name="obj">The array whose objects should be validated.</param>
-        /// <returns>True if all objects passed validation, otherwise false.</returns>
+        // Validate all objects in the array. Returns false if any object fails validation.
         var result = true, // Default to true if the array if empty
             tempResult,
             i;
 
         if (!isArray(obj)) {
-            throw new Error("Object is not an array");
+            throw new TypeError("Object is not an array");
         }
 
         for (i = 0; i < obj.length; i += 1) {
+            // Call validateObject since we don't know the type of the actual object;
+            // it could be another array, play js object, observable etc.
             tempResult = validateObject(obj[i]);
 
             if (!tempResult) {
@@ -48,9 +47,7 @@
     };
 
     validateObject = function (obj) {
-        /// <summary>Validates the specified object.</summary>
-        /// <param name="obj">The object to validate.</param>
-        /// <returns>True if the object passed validation, otherwise false.</returns>
+        // Validates the specified object. Returns true if object passed validation, otherwise false.
         var result = true,
             prop,
             value;
@@ -77,9 +74,8 @@
     };
 
     unwrap = function (obj) {
-        /// <summary>Unwraps the object, whether it's a plain js object, observable or function. So unlike ko.utils.unwrapObservable
-        /// this method also unwraps functions and return their values.</summary>
-        /// <param name="obj">The object to unwrap.</param>
+        // Unwraps the object, whether it's a plain js object, observable or function. So unlike ko.utils.unwrapObservable
+        // this method also unwraps functions and return their values.
         var result = ko.utils.unwrapObservable(obj);
 
         if (typeof result === "function") {
