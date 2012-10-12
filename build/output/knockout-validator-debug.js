@@ -1,6 +1,4 @@
 ﻿// Knockout Validate v0.1-pre
-// (c) Martin Landälv - http://mlandalv.github.com/knockout-validate/
-// License: MIT (http://www.opensource.org/licenses/mit-license.php)
 (function (ko) {
     "use strict";
 
@@ -24,8 +22,7 @@
             /// <param name="callback">Callback to run on validate.</param>
             /// <param name="message">Default error message.</param>
 
-            // Make sure the validator object is bound to 'this' when the callback is invoked.
-            // Knockout provides a polyfill for the bind function if not natively supported.
+            // Make sure the validator object is bound to 'this' when the callback is invoked
             this.methods[name] = callback.bind(this);
             this.messages[name] = message;
         },

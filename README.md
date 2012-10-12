@@ -7,4 +7,5 @@ Many ideas, and especially rules, are taken from the [jQuery Validation](https:/
 ## Build
 To build on Windows, open up a Powershell console and run `build\build.ps1`.
 
-License: MIT http://www.opensource.org/licenses/mit-license.php
+## Licence
+No restrictions.
