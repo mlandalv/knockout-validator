@@ -1,9 +1,9 @@
-﻿// Knockout Validate v0.1-pre
+// Knockout Validator v0.1.0
+
 (function (ko) {
     "use strict";
 
     var validator = {
-        version: "0.1-pre",
         methods: {},
         messages: {},
         options: {
@@ -36,8 +36,9 @@
 
     ko.validator = validator;
 }(ko));
+
 (function (ko) {
-    "use strict";
+    'use strict';
 
     var validator = ko.validator,
         validateArray,
@@ -222,6 +223,7 @@
         validateObservable: validateObservable
     };
 }(ko));
+
 (function (ko) {
     "use strict";
 
@@ -299,6 +301,7 @@
             return utils.format("Please enter a value between {0} and {1} characters long.", param.min, param.max);
         });
 }(ko));
+
 (function (ko) {
     "use strict";
 
@@ -379,6 +382,7 @@
         };
     }());
 }(ko));
+
 (function (ko) {
     "use strict";
 

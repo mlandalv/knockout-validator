@@ -1,5 +1,5 @@
-﻿(function (ko) {
-    "use strict";
+(function (ko) {
+    'use strict';
 
     var validator = ko.validator,
         validateArray,

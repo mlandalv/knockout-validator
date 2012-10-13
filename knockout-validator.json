@@ -1,0 +1,21 @@
+{
+    "name": "knockout-validator",
+    "title": "Knockout Validator",
+    "description": "Validation framework for KnockoutJS.",
+    "version": "0.1.0",
+    "homepage": "",
+    "author": {
+        "name": "Martin Landälv"
+    },
+    "repository": {
+        "type": "git://github.com/mlandalv/knockout-validator.git",
+        "url": "https://github.com/mlandalv/knockout-validator"
+    },
+    "bugs": {
+        "url": ""
+    },
+    "dependencies": {
+        "Knockout": "*"
+    },
+    "keywords": []
+}

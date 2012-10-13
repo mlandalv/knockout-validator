@@ -2,7 +2,6 @@
     "use strict";
 
     var validator = {
-        version: "##VERSION##",
         methods: {},
         messages: {},
         options: {
