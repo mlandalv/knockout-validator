@@ -1,7 +1,3 @@
-/// <reference path="../libs/qunit-git.js" />
-/// <reference path="../libs/knockout-2.0.0.js" />
-/// <reference path="../build/output/knockout-validator-debug.js" />
-
 module("Methods");
 
 test("required", function () {
@@ -11,27 +7,27 @@ test("required", function () {
     equal(ko.validator.messages.required, "This field is required.", "Verify default message");
 
     // undefined
-    equal(method(target(), target), false, "Expects false when value is undefined");
+    equal(method(target(), target), false, "False when value is undefined");
 
     // null
     target(null);
-    equal(method(target(), target), false, "Expects false when value is null");
+    equal(method(target(), target), false, "False when value is null");
 
     // Empty string
     target("");
-    equal(method(target(), target), false, "Expects false when value is empty string");
+    equal(method(target(), target), false, "False when value is empty string");
 
     // Zero is falsy, but a valid value
     target(0);
-    equal(method(target(), target), true, "Expects true if value is 0");
+    equal(method(target(), target), true, "True if value is 0");
 
     // False
     target(false);
-    equal(method(target(), target), true, "Expects true when value is false");
+    equal(method(target(), target), true, "True when value is false");
 
     // Non-zero length string
     target("a");
-    equal(method(target(), target), true, "Expects true when string value is set");
+    equal(method(target(), target), true, "True when string value is set");
 });
 
 test("number", function () {
@@ -180,10 +176,11 @@ test("dateISO", function () {
     target("0000-01-01");
     equal(method(target(), target), true, "True if year 0");
 
-    equal(method(target(), target), true, "True if year -1");
+    target("-0001-01-01");
+    equal(method(target(), target), false, "False if year -1");
 
     target("20000101");
-    equal(method(target(), target), false, "False if dashes omitted");
+    equal(method(target(), target), false, "False if dashes are omitted");
 
     target("90-01-01");
     equal(method(target(), target), false, "False if year only is 2 characters");
